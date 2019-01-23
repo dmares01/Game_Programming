@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<title>Number guessing game</title>
+	</head>
+	<body>
+	<h1 id="output">Prime Number Guessing Game</h1>
+	<p id="output">I am thinking of a prime number between 1 and 25</p>
+	<input id="input" type="text" placeholder="Tell me a prime number:">
+	<button style="cursor: pointer;">guess</button>
+		<script type="text/javascript">
+
+			//Game variables
+			var prime_numbers = new Set([2,3,5,7,11,13,17,19,21]);
+			var trueValue = 13;
+			var playerGuess = 0;
+
+			//The input and output fields
+			var input = document.querySelector("#input");
+			var output = document.querySelector("#output");
+
+			//The button
+			var button = document.querySelector("button");
+			button.style.cursor = "pointer";
+			button.addEventListener("click", clickHandler, false);
+			
+			function clickHandler()
+			{
+			playGame();
+			}
+
+			function playGame()
+			{
+				playerGuess = parseInt(input.value);
+				var prime_numbers = new Set([2,3,5,7,11,13,17,19,21]);
+		
+				if(!prime_numbers.has(playerGuess))
+				{
+					output.innerHTML = "That's not a prime number...";
+				}
+				else if(playerGuess > trueValue)
+				{
+					output.innerHTML = "Sorry, that's too high.";
+				}
+				else if(playerGuess < trueValue)
+				{
+					output.innerHTML = "Sorry, that's too low.";
+				}
+				else if(playerGuess === trueValue)
+				{
+					output.innerHTML = "You must be a genius. You're right!";
+				}
+			}
+		</script>
+	</body>
+</html>
