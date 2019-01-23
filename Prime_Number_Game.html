@@ -3,15 +3,20 @@
 		<title>Number guessing game</title>
 	</head>
 	<body>
-	<h1 id="output">Prime Number Guessing Game</h1>
-	<p id="output">I am thinking of a prime number between 1 and 25</p>
+	<img src ="https://i.imgur.com/HPwIb2b.png" alt = "Grid of prime numbers between 1 and 25" width = "250" height = "250">
+	<h1 id="title_output">Prime Number Guessing Game</h1>
+	<p id="output">I am thinking of a prime number between 1 and 25<br> Can you guess it? </p>
 	<input id="input" type="text" placeholder="Tell me a prime number:">
-	<button style="cursor: pointer;">guess</button>
+	<button style="cursor: pointer;">Make your guess</button>
+	<button onclick ="generate_number()">Generate a new number</button>
 		<script type="text/javascript">
 
 			//Game variables
-			var prime_numbers = new Set([2,3,5,7,11,13,17,19,21]);
-			var trueValue = 13;
+			var prime_numbers = new Set([2,3,5,7,11,13,17,19,23]);
+			var trueValue = 3;
+			//while (input.value = false)
+	
+			//generate_number();
 			var playerGuess = 0;
 
 			//The input and output fields
@@ -31,9 +36,10 @@
 			function playGame()
 			{
 				playerGuess = parseInt(input.value);
-				var prime_numbers = new Set([2,3,5,7,11,13,17,19,21]);
-		
-				if(!prime_numbers.has(playerGuess))
+				if(playerGuess < 1 || playerGuess > 25){
+					output.innerHTML = "Can you read the directions please?";
+				}
+				else if(!prime_numbers.has(playerGuess))
 				{
 					output.innerHTML = "That's not a prime number...";
 				}
@@ -49,6 +55,45 @@
 				{
 					output.innerHTML = "You must be a genius. You're right!";
 				}
+			}
+			
+			function random(){
+				var x = Math.floor(Math.random()*9);
+				return x;
+			}
+		
+			function generate_number(){
+				output.innerHTML = "Please guess again";
+				switch(random()){
+					case 0: 
+						trueValue = 2;
+						break;
+					case 1:
+						trueValue = 3;
+						break;
+					case 2:
+						trueValue = 5;
+						break;
+					case 3:
+						trueValue = 7;
+						break;
+					case 4:
+						trueValue = 11;
+						break;
+					case 5:
+						trueValue = 13;
+						break;
+					case 6:
+						trueValue = 17;
+						break;
+					case 7:
+						trueValue = 19;
+						break;
+					case 8:
+						trueValue = 23;
+						break;
+				}
+				return trueValue;
 			}
 		</script>
 	</body>
