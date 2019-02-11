@@ -1,8 +1,9 @@
 # Game_Programming
 A repository for assignments and programs in the Game Programming class I am taking at Augsburg
-___
 This is my first time using html and javascript but so far the projects have been exciting and I tend to go a lot
 farther with the games then required for the class. 
+
+From these projects I have learned the basics of HTML and Javascript including how to set up a simple webpage, how to handle input and output, rendering a game map of some kind, and interacting with different images. 
 
 # Prime Number Game
 This game is a simple guessing game where the user needs to guess a prime number between 
