@@ -8,13 +8,18 @@
 position: relative;
 width: 768px;
 height: 768px;
-background-image: url("../images/oceanbluelarge.png");
+background-image: url("https://i.imgur.com/9gCHr95.png");
 }
 /*size of each cell on the ocean*/
 .cell
 {
 display: block;
 position: absolute;
+<!-- 
+background: url("https://i.imgur.com/9gCHr95.png");
+background-width: 128px;
+background-height: 128px; 
+-->
 width: 128px;
 height :128px;
 }
@@ -42,22 +47,24 @@ window.addEventListener("keydown", keydownHandler, false);
 //Game matrix
 var map =
 [
-:
-:
-:
-:
-:
+[0,0,1,0,0,3],
+[0,0,0,2,0,0],
+[0,2,0,0,2,0],
+[0,0,1,0,0,0],
+[0,0,2,0,1,0],
+[0,0,0,0,0,0],
 ];
 
 //Placing the various game objects on the Map
 var gameObjects =
 [
-:
-:
-:
-:
-:
-:
+[0,0,0,0,0,0],
+[0,0,0,0,0,0],
+[0,0,0,0,0,0],
+[0,0,0,0,0,0],
+[0,0,0,0,0,0],
+[4,0,0,0,0,0],
+
 ];
 
 //Map code--used in the matrix above
@@ -88,10 +95,10 @@ for(var row = 0; row < rows; row++)
 {
 	for(var column = 0; column < columns; column++)
 	{
-		if(:)
+		if(gameObjects[row][column] === ship)
 		{
-			shipRow = :;
-			shipColumn = :;
+			shipRow = row;
+			shipColumn = column;
 		}
 	}
 }
@@ -105,46 +112,46 @@ function keydownHandler(event)
 	{
 		case up:
 			//determine if the ship's move will be within the playing field
-			if(shipRow >:)
+			if(shipRow > 0)
 			{
 				//if so, clear ship's current cell
-				gameObjects[shipRow][:] = 0;
+				gameObjects[shipRow][shipColumn] = 0;
 				//subract 1 from the ship's row to move it up one row on the map
 				shipRow--;
 				//apply the ship's new updated position to the array
-				gameObjects[:][:] = ship;
+				gameObjects[shipRow][shipColumn] = ship;
 			}
 			break;
 			
 		case down:
 			if(shipRow < rows - 1)
 			{
-				gameObjects[:][:] = 0;
+				gameObjects[shipRow][shipColumn] = 0;
 				shipRow++;
-				gameObjects[:][:] = ship;
+				gameObjects[shipRow][shipColumn] = ship;
 			}
 			break;
 			
 		case left:
 			if(shipColumn > 0)
 			{
-				gameObjects[:][:] = 0;
+				gameObjects[shipRow][shipColumn] = 0;
 				shipColumn--;
-				gameObjects[:][:] = ship;
+				gameObjects[shipRow][shipColumn] = ship;
 			}
 			break;
 			
 		case right:
 			if(shipColumn < columns - 1)
 			{
-				gameObjects[:][:] = 0;
+				gameObjects[shipRow][shipColumn] = 0;
 				shipColumn++;
-				gameObjects[:][:] = ship;
+				gameObjects[shipRow][shipColumn] = ship;
 			}
 			break;
 	}
 	//find out what kind of cell the ship is on
-	switch(map[:][:])
+	switch(map[shipRow][shipColumn])
 	{
 		case water:
 			console.log("water");
@@ -183,7 +190,7 @@ function render()
 		for(var column = 0; column < columns; column++)
 		{
 			//Create an image tag called cell
-			: = document.createElement("img");
+			var cell = document.createElement("img");
 
 			//Set the CSS class to "cell"
 			cell.setAttribute("class", "cell");
@@ -195,26 +202,26 @@ function render()
 			switch(map[row][column])
 			{
 				case water:
-					cell.src = "../images/water.png";
+					//cell.src = "https://i.imgur.com/9gCHr95.png"; Is this alright to have commented out?
 					break;
 
 				case island:
-					cell.src = "../images/desertIsland.png";
+					cell.src = "https://imgur.com/n8pMk7i.png";
 					break;
 
 				case pirate:
-					cell.src = "../images/pirateship.png";
+					cell.src = "https://i.imgur.com/LeaKg6v.png";
 					break;
 
 				case home:
-					cell.src = "../images/home.png";
+					cell.src = "https://i.imgur.com/hH7Chrc.png";
 					break;
 			}
 				//Add the ship from the gameObjects array
 			switch(gameObjects[row][column])
 			{
 				case ship:
-					cell.src = "../images/shipBritish.png";
+					cell.src = "https://i.imgur.com/c53qesh.png";
 					break;
 			}
 			//Position the cell
