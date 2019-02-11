@@ -6,7 +6,7 @@
 	<img src ="https://i.imgur.com/HPwIb2b.png" alt = "Grid of prime numbers between 1 and 25" width = "250" height = "250">
 	<h1 id="title_output">Prime Number Guessing Game</h1>
 	<p id="output">I am thinking of a prime number between 1 and 25 </p> 
-	<p id="output_2"> Can you guess it? </p>
+	<p id="output_2"> You get three guesses to get it right. </p>
 	<input id="input" type="text" placeholder="Tell me a prime number:" onkeypress = "return enter()">
 	<button style="cursor: pointer;">Submit your guess</button>
 	<button onclick ="generate_number()">Generate a new number</button>
@@ -16,6 +16,7 @@
 			var prime_numbers = new Set([2,3,5,7,11,13,17,19,23]);
 			var trueValue = 3;
 			var playerGuess = 0;
+			var num_of_guesses = 2;
 
 			//The input and output fields
 			var input = document.querySelector("#input");
@@ -44,33 +45,42 @@
 			function playGame()
 			{
 				playerGuess = parseInt(input.value);
-				if(playerGuess < 1 || playerGuess > 25){
+				if(num_of_guesses == 0){
+					output.innerHTML = "Sorry you're out of guesses.";
+					output_2.innerHTML = "Click the button to generate a new number.";
+				}
+				else if(playerGuess < 1 || playerGuess > 25){
 					output.innerHTML = "Can you read the directions please? <br>";
-					output_2.innerHTML = "Go ahead and try again";
+					output_2.innerHTML = "Only " + num_of_guesses + " guesses left";
+					num_of_guesses--;
 					input.value = "";
 				}
 				else if(!prime_numbers.has(playerGuess))
 				{
 					output.innerHTML = "That's not a prime number...";
-					output_2.innerHTML = "Go ahead and try again";
+					output_2.innerHTML = "Only " + num_of_guesses + " guesses left";
+					num_of_guesses--;
 					input.value = "";
 				}
 				else if(playerGuess > trueValue)
 				{
 					output.innerHTML = "Sorry, that's too high.";
-					output_2.innerHTML = "Go ahead and try again";
+					output_2.innerHTML = "Only " + num_of_guesses + " guesses left";
+					num_of_guesses--;
 					input.value = "";
 				}
 				else if(playerGuess < trueValue)
 				{
 					output.innerHTML = "Sorry, that's too low.";
-					output_2.innerHTML = "Go ahead and try again";
+					output_2.innerHTML = "Only " + num_of_guesses + " guesses left";
+					num_of_guesses--;
 					input.value = "";
 				}
 				else if(playerGuess === trueValue)
 				{
+					generate_number();
 					output.innerHTML = "You must be a genius. You're right!";
-					output_2.innerHTML = "Go ahead and try again";
+					output_2.innerHTML = "Here is a new number";
 					input.value = "";
 				}
 			}
@@ -84,6 +94,7 @@
 				output.innerHTML = "I'm thinking of a new number";
 				output_2.innerHTML = "See if you can get this one";
 				input.value = "";
+				num_of_guesses = 2;
 				switch(random()){
 					case 0: 
 						trueValue = 2;
