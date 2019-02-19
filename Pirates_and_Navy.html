@@ -1,3 +1,6 @@
+//Drew Mares
+//Pirates_and_Navy Assignment
+//2-15-2019
 <!doctype html>
 <title>Pirates & Navy</title>
 
@@ -15,13 +18,14 @@ background-image: url("https://i.imgur.com/9gCHr95.png");
 {
 display: block;
 position: absolute;
-<!-- 
-background: url("https://i.imgur.com/9gCHr95.png");
+
+<!-- background: url("https://i.imgur.com/9gCHr95.png");
 background-width: 128px;
 background-height: 128px; 
--->
-width: 128px;
-height :128px;
+ -->
+ 
+width:  128px;
+height: 128px;
 }
 /*size of the the ocean*/
 p
@@ -43,17 +47,70 @@ var output = document.querySelector("#output");
 
 //Keyboard listener for user to manipulate ship
 window.addEventListener("keydown", keydownHandler, false);
+var num_of_ships = 0;
+var num_of_islands = 0;
 
+function random_object(){
+	var x = Math.floor(Math.random()*20)
+
+	switch (x){
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+		case 11:
+		case 12:
+		case 13:
+		case 14:
+			x = 0;
+			break;
+		case 15:
+		case 16:
+		case 17:
+			x = 1;
+			if(num_of_islands > 2){
+				x = 0;
+			}
+			num_of_islands++;
+			break;
+		case 18:
+		case 19:
+		case 20:
+			x = 2;
+			if(num_of_ships > 2){
+				x = 0;
+			}
+			num_of_ships++;
+			break;
+	}
+	return x;
+}
 //Game matrix
 var map =
 [
-[0,1,0,0,0,3],
-[0,0,0,2,0,0],
-[0,2,0,0,2,0],
-[0,0,1,0,0,0],
-[0,0,2,0,0,1],
-[0,0,0,0,2,0],
+[0,0,0,0,0,3],
+[0,0,0,0,0,0],
+[0,0,0,0,0,0],
+[0,0,0,0,0,0],
+[0,0,0,0,0,0],
+[0,0,0,0,0,0],
 ];
+
+
+for(var r = 0; r < 6; r++){
+	for(var c = 0; c < 6; c++){
+		if(r != 0 && c != 5){
+		map[r][c] = random_object();
+		}
+	}	
+}
+
 
 //Placing the various game objects on the Map
 var gameObjects =
