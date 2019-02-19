@@ -66,24 +66,31 @@ function random_object(){
 		case 10:
 		case 11:
 		case 12:
-		case 13:
-		case 14:
 			x = 0;
 			break;
+			
+		case 13:
+		case 14:
 		case 15:
 		case 16:
-		case 17:
-			x = 1;
-			if(num_of_islands > 2){
+			if(num_of_islands < 3){
+				x = 1;
+			}
+			else{
 				x = 0;
 			}
 			num_of_islands++;
 			break;
+			
+		case 17:
 		case 18:
 		case 19:
 		case 20:
-			x = 2;
-			if(num_of_ships > 2){
+			
+			if(num_of_ships < 3){
+				x = 2;
+			}
+			else{
 				x = 0;
 			}
 			num_of_ships++;
