@@ -23,265 +23,269 @@ text-align: left;
 //--- The squidMonster object
 var squidMonster =
 {
-//tilesheet source, size of each frame, and number of game columns
-tileGraphic: "monsterTileSheet4.png",
-size: 256,
-columns: 3,
-//The numbers of the animation frames and the starting frame
-numberOfFrames: 5,
-currentFrame: 0,
-//Properties of the animation frames's x and y po
-//A property to control the loop 
-forward: true,
-//States
-hiding: 0,
-leaping: 1,
-strike: 2,
-state: this.hiding,
-//Properties needed to help reset the animation
-timeToReset: 9,
-resetCounter: 0,
-//A property to store the random time
-waitTime: undefined,
-//A method to find a random animation time
-findWaitTime: function()
-{
-this.waitTime = Math.ceil(Math.random() * 60);
-},
-//The squidMonster's aniMate method
-aniMate: function()
-{
-this.sourceX = Math.floor(this.currentFrame % this.columns) * this.size;
-this.sourceY = Math.floor(this.currentFrame / this.columns) * this.size;
-//Figure out the squidMonster's state
-if(this.state !== this.strike)
-{
-if(this.waitTime > 0 || this.waitTime === undefined)
-{
-this.state = this.hiding;
-}
-else
-{
-this.state = this.leaping;
-}
-}
-//Change the behaviour of the animation based on the state
-switch(this.state)
-{
-case this.hiding:
-this.currentFrame = 0;
-this.waitTime--;
-break;
-case this.leaping:
-//If the last frame has been reached, set forward to false
-if(this.currentFrame === this.numberOfFrames)
-{
-this.forward = false;
-}
-//If the first frame has been reached, set forward to true
-if(this.currentFrame === 0 && this.forward === false)
-{
-//Set forward to true, find a new waitTime,
-//set the state to hiding and break the switch statement
-this.forward = true;
-this.findWaitTime();
-this.state = this.hiding;
-break;
-}
-//Add 1 to currentFrame if forward is true, subtract 1 if it's false
-if(this.forward)
-{
-this.currentFrame++;
-}
-else
-{
-this.currentFrame--;
-}
-break;
-case this.strike:
-//Set the current frame to the last one on the tilesheet
-//to display the explosion image
-this.currentFrame = 6;
-//Update the resetCounter by 1
-this.resetCounter++;
-//Reset the animation if the resetCounter equals the timeToReset
-if(this.resetCounter === this.timeToReset)
-{
-this.state = this.hiding;
-this.forward = true;
-this.currentFrame = 0;
-this.resetCounter = 0;
-this.findWaitTime();
-}
-break;
-}
-}
+	//tilesheet source, size of each frame, and number of game columns
+	tileGraphic: "https://i.imgur.com/xpHu58C.png",
+	size: 128,
+	columns: 3,
+	//The numbers of the animation frames and the starting frame
+	numberOfFrames: 5,
+	currentFrame: 0,
+	//Properties of the animation frames's x and y position
+	//A property to control the loop 
+	forward: true,
+	
+	//States
+	hiding: 0,
+	leaping: 1,
+	strike: 2,
+	state: this.hiding,
+	//Properties needed to help reset the animation
+	timeToReset: 9,
+	resetCounter: 0,
+	//A property to store the random time
+	waitTime: undefined,
+	//A method to find a random animation time
+	findWaitTime: function()
+	{
+		this.waitTime = Math.ceil(Math.random() * 60);
+	},
+		//The squidMonster's aniMate method
+	aniMate: function()
+	{
+		this.sourceX = Math.floor(this.currentFrame % this.columns) * this.size;
+		this.sourceY = Math.floor(this.currentFrame / this.columns) * this.size;
+		
+		//Figure out the squidMonster's state
+		if(this.state !== this.strike)
+		{
+			if(this.waitTime > 0 || this.waitTime === undefined)
+			{
+				this.state = this.hiding;
+			}
+			else
+			{
+				this.state = this.leaping;
+			}
+		}
+		//Change the behaviour of the animation based on the state
+		switch(this.state)
+		{
+			case this.hiding:
+				this.currentFrame = 0;
+				this.waitTime--;
+				break;
+			case this.leaping:
+				//If the last frame has been reached, set forward to false
+				if(this.currentFrame === this.numberOfFrames)
+				{
+					this.forward = false;
+				}
+				//If the first frame has been reached, set forward to true
+				if(this.currentFrame === 0 && this.forward === false)
+				{
+					//Set forward to true, find a new waitTime,
+					//set the state to hiding and break the switch statement
+					this.forward = true;
+					this.findWaitTime();
+					this.state = this.hiding;
+					break;
+				}
+				//Add 1 to currentFrame if forward is true, subtract 1 if it's false
+				if(this.forward)
+				{
+					this.currentFrame++;
+				}
+				else
+				{
+					this.currentFrame--;
+				}
+				break;
+			case this.strike:
+				//Set the current frame to the last one on the tilesheet
+				//to display the explosion image
+				this.currentFrame = 6;
+				//Update the resetCounter by 1
+				this.resetCounter++;
+				//Reset the animation if the resetCounter equals the timeToReset
+				if(this.resetCounter === this.timeToReset)
+				{
+					this.state = this.hiding;
+					this.forward = true;
+					this.currentFrame = 0;
+					this.resetCounter = 0;
+					this.findWaitTime();
+				}
+				break;
+		}
+	}
 }; 
 //======================================================================
 //======================== The gameTimer object========================
 var gameTimer =
 {
-time: 0,
-interval: undefined,
-begin: function()
-{
-var self = this;
-this.interval = setInterval(function(){self.tick();}, 1000);
-},
-tick: function()
-{
-this.time--;
-},
-stop: function()
-{
-clearInterval(this.interval);
-},
-reset: function()
-{
-this.time = 0;
-}
+	time: 0,
+	interval: undefined,
+	begin: function()
+	{
+		var self = this;
+		this.interval = setInterval(function(){self.tick();}, 1000);
+	},
+	tick: function()
+	{
+		this.time--;
+	},
+	stop: function()
+	{
+		clearInterval(this.interval);
+	},
+	reset: function()
+	{
+		this.time = 0;
+	}
 };
-//
-=====================================================================
-//--- Main program
+//=====================================================================
+//Main program
 //=====================================================================
 //Load animation tile sheet
 var tileGraphic = new Image();
 tileGraphic.addEventListener("load", loadHandler, false);
 tileGraphic.src = "../images/" + squidMonster.tileGraphic;
+
 //The number of rows and columns and the size of each cell
 var rows = 3;
 var columns = 6;
 var size = squidMonster.size;
 var space = 10;
+
 //Arrays for the squidMonsters, canvases and drawing surfaces
 var squidMonsterObjects = [];
 var squidMonsterCanvases = [];
 var monsterDrawingSurfaces = [];
+
 //Game variables
 var squidMonsterSquishes = 0;
+
 //Get a referene to the output
 var output = document.querySelector("#output");
 function loadHandler()
 {
-//Plot the grid of monsters
-fillOcean();
-//begin the game timer
-gameTimer.time = 30;
-gameTimer.begin();
-//begin the animation loop
-aniMate();
+	//Plot the grid of monsters
+	fillOcean();
+	
+	//begin the game timer
+	gameTimer.time = 30;
+	gameTimer.begin();
+	//begin the animation loop
+	aniMate();
 }
 function fillOcean()
 {
-for(var row = 0; row < rows; row++)
-{
-playSound('whaleOcean.mp3');
-for(var column = 0; column < columns; column++)
-{
-//Create a new squidMonster object,give it a random time, display its
-//first frame and push it into an array
-var newMonsterObject = Object.create(squidMonster);
-newMonsterObject.findWaitTime();
-squidMonsterObjects.push(newMonsterObject);
-//Create a canvas tag for each squidMonster, add it to the
-<div id="ocean"> tag,
-//position it, then add a mousedown listener and push it into an array
-::::::: 8 lines go here :::::::
-//Create drawing surface. push it into the drawingSurfaces array
-var drawingSurface = canvas.getContext("2d");
-monsterDrawingSurfaces.push(drawingSurface);
-}
-}
+	for(var row = 0; row < rows; row++)
+	{
+		playSound('whaleOcean.mp3');
+		for(var column = 0; column < columns; column++)
+		{
+		//Create a new squidMonster object,give it a random time, display its
+		//first frame and push it into an array
+		var newMonsterObject = Object.create(squidMonster);
+		newMonsterObject.findWaitTime();
+		squidMonsterObjects.push(newMonsterObject);
+		//Create a canvas tag for each squidMonster, add it to the
+		<div id="ocean"> tag,
+		//position it, then add a mousedown listener and push it into an array
+		::::::: 8 lines go here :::::::
+		//Create drawing surface. push it into the drawingSurfaces array
+		var drawingSurface = canvas.getContext("2d");
+		monsterDrawingSurfaces.push(drawingSurface);
+		}
+	}
 }
 function aniMate()
 {
-//Call aniMate every 120 milliseconds while the timer > 0.
-if(gameTimer.time > 0)
-{
-setTimeout(aniMate, 120);
-}
-//Loop through all the monsters in the array, call aniMate method
-for(var i = 0; i < squidMonsterObjects.length; i++)
-{
-::::::: 1 line goes here :::::::
-}
-//check for the end of the game
-if(gameTimer.time === 0)
-{
-gameOver();
-}
-//Render the animation
-render();
+	//Call aniMate every 120 milliseconds while the timer > 0.
+	if(gameTimer.time > 0)
+	{
+		setTimeout(aniMate, 120);
+	}
+	//Loop through all the monsters in the array, call aniMate method
+	for(var i = 0; i < squidMonsterObjects.length; i++)
+	{
+		::::::: 1 line goes here :::::::
+	}
+	//check for the end of the game
+	if(gameTimer.time === 0)
+	{
+		gameOver();
+	}
+	//Render the animation
+	render();
 }
 function gameOver()
 {
-//Stop the gameTimer
-gameTimer.stop();
-//Remove the mousedown event listeners from the
-//canvas tags so that they can't be clicked
-for(var i = 0; i < squidMonsterCanvases.length; i++)
+	//Stop the gameTimer
+	gameTimer.stop();
+	//Remove the mousedown event listeners from the canvas tags so that they can't be clicked
+	for(var i = 0; i < squidMonsterCanvases.length; i++)
+	{
+		var canvas = squidMonsterCanvases[i];
+		canvas.removeEventListener("mousedown", mousedownHandler, false);
+	}
+}
+function playSound(soundfile_ogg, soundfile_mp, soundfile_ma)
 {
-var canvas = squidMonsterCanvases[i];
-canvas.removeEventListener("mousedown", mousedownHandler, false
-);
-}
-}
-function playSound(soundfile_ogg, soundfile_mp, soundfile_ma) {
-if ("Audio" in window) {
-var a = new Audio();
-if (!!(a.canPlayType && a.canPlayType('audio/ogg;codecs="vorbis"').replace(/no/, '')))a.src = soundfile_ogg;
-else if (!!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/,'')))a.src = soundfile_mp;
-else if (!!(a.canPlayType && a.canPlayType('audio/mp4; codecs="mp4a.40.2"').replace(/no/, '')))
-a.src = soundfile_ma;
-else
-a.src = soundfile_mp;
-a.autoplay = true;
-return;
-} 
-else {
-alert("Time almost up");
-}
+	if ("Audio" in window)
+	{
+		var a = new Audio();
+		if (!!(a.canPlayType && a.canPlayType('audio/ogg;codecs="vorbis"').replace(/no/, '')))a.src = soundfile_ogg;
+		else if (!!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/,'')))a.src = soundfile_mp;
+		else if (!!(a.canPlayType && a.canPlayType('audio/mp4; codecs="mp4a.40.2"').replace(/no/, '')))
+		a.src = soundfile_ma;
+		else
+		a.src = soundfile_mp;
+		a.autoplay = true;
+		return;
+	} 
+	else 
+	{
+		alert("Time almost up");
+	}
 }
 function mousedownHandler(event)
 {
-//Find out which canvas was clicked
-var theCanvasThatWasClicked = event.target;
-//Search squidMonsterCanvases array for a canvas that matches the
-clicked one
-for(var i = 0; i < squidMonsterCanvases.length; i++)
-{
-if(squidMonsterCanvases[i] === theCanvasThatWasClicked)
-{
-var squidMonster = squidMonsterObjects[i]
-if(squidMonster.state === squidMonster.leaping)
-{
-::::::: 2 lines go here :::::::
-playSound('explosion.mp3');
-}
-}
-}
+	//Find out which canvas was clicked
+	var theCanvasThatWasClicked = event.target;
+	
+	//Search squidMonsterCanvases array for a canvas that matches the clicked one
+	for(var i = 0; i < squidMonsterCanvases.length; i++)
+	{
+		if(squidMonsterCanvases[i] === theCanvasThatWasClicked)
+		{
+			var squidMonster = squidMonsterObjects[i]
+			if(squidMonster.state === squidMonster.leaping)
+			{
+			::::::: 2 lines go here :::::::
+			playSound('explosion.mp3');
+			}
+		}
+	}
 }
 function render()
 {
-for(var i = 0; i < squidMonsterObjects.length; i++)
-{
-//Get reference to the current squidMonster and drawing surface
-var squidMonster = :::::::
-var drawingSurface = :::::::
-//Clear the current squidMonster's canvas
-drawingSurface.clearRect(0, 0, size, size);
-//Draw the squidMonster's current animation frame
-drawingSurface.drawImage
-(
-tileGraphic,
-squidMonster.sourceX, squidMonster.sourceY, size, size,
-336 0, 0, size, size
-);
-}
-//Display the output
-output.innerHTML = "<span class='ComicSansGreenLightYellow '> Squid Monsters
-Squished:</span>" + squidMonsterSquishes + "<span class='ComicSansGreenLightYellow '>, Time left:
-</span>" + gameTimer.time;
+	for(var i = 0; i < squidMonsterObjects.length; i++)
+	{
+		//Get reference to the current squidMonster and drawing surface
+		var squidMonster = :::::::
+		var drawingSurface = :::::::
+		
+		//Clear the current squidMonster's canvas
+		drawingSurface.clearRect(0, 0, size, size);
+		
+		//Draw the squidMonster's current animation frame
+		drawingSurface.drawImage(tileGraphic,squidMonster.sourceX, squidMonster.sourceY, size, size,336 0, 0, size, size);
+	}
+	//Display the output
+	output.innerHTML = "<span class='ComicSansGreenLightYellow '> Squid Monsters
+	Squished:</span>" + squidMonsterSquishes + "<span class='ComicSansGreenLightYellow '>, Time left:
+	</span>" + gameTimer.time;
 }
 </script>

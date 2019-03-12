@@ -5,34 +5,37 @@
  	//Create the monster object
  	var monster =
  	{
- 	//The tilesheet image, its size, and the number of columns it has
- 	IMAGE: "https://i.imgur.com/xpHu58C.png",
- 	size: 128,
- 	columns: 3,
- 	 
- 	//The numbers of the animation frames and the starting frame
- 	numberOfFrames: 5,
- 	currentFrame: 0,
- 	 
- 	//Animation frames's x and y positions on the tile sheet.
- 	sourceX: 0,
- 	sourceY: 0,
- 	 
- 	//The monster's aniMate method
- 	aniMate: function()
- 	{
- 	//Find the frame's correct column and row
- 	//on the tilesheet
- 	this.sourceX
- 	= Math.floor(this.currentFrame % this.columns) * this.size;
- 	this.sourceY
- 	= Math.floor(this.currentFrame / this.columns) * this.size;
- 	 
- 	if(this.currentFrame < this.numberOfFrames)
- 	{
- 	this.currentFrame++; //Advance currentFrame by 1
- 	}
- 	}};
+		//The tilesheet image, its size, and the number of columns it has
+		IMAGE: "https://i.imgur.com/xpHu58C.png",
+		size: 128,
+		columns: 3,
+		 
+		//The numbers of the animation frames and the starting frame
+		numberOfFrames: 5,
+		currentFrame: 0,
+		 
+		//Animation frames's x and y positions on the tile sheet.
+		sourceX: 0,
+		sourceY: 0,
+		 
+		//The monster's aniMate method
+		aniMate: function()
+		{
+			//Find the frame's correct column and row
+			//on the tilesheet
+			this.sourceX = Math.floor(this.currentFrame % this.columns) * this.size;
+			this.sourceY = Math.floor(this.currentFrame / this.columns) * this.size;
+			 
+			if(this.currentFrame < this.numberOfFrames)
+			{
+				this.currentFrame++; //Advance currentFrame by 1
+			}
+			else
+			{
+				this.currentFrame = 0;
+			}
+		}
+	};
  	 
  	//Set up the canvas and drawing surface
  	var canvas = document.querySelector("canvas");
@@ -45,31 +48,25 @@
  	 
  	function loadHandler()
  	{
- 	//Start the animation
- 	aniMate();
+		//Start the animation
+		aniMate();
  	}
  	 
  	function aniMate()
  	{
- 	 
- 	setTimeout(aniMate, 300); //Set a timer to call aniMate every 300 mss
- 	 
- 	monster.aniMate(); //Update the monster's animation frames
- 	 
- 	render(); //Render the animation
+		setTimeout(aniMate, 300); //Set a timer to call aniMate every 300 mss
+		 
+		monster.aniMate(); //Update the monster's animation frames
+		 
+		render(); //Render the animation
  	}
  	 
  	function render()
  	{
- 	//Clear the canvas of any previous frames
- 	drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
- 	 
- 	//Draw the monster's current animation frame
- 	drawingSurface.drawImage
- 	(
- 	image,
- 	monster.sourceX, monster.sourceY, monster.size, monster.size,
- 	0, 0, monster.size, monster.size
- 	);
+		//Clear the canvas of any previous frames
+		drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+		 
+		//Draw the monster's current animation frame
+		drawingSurface.drawImage(image,monster.sourceX, monster.sourceY, monster.size, monster.size,0, 0, monster.size, monster.size);
  	}
  	</script>
