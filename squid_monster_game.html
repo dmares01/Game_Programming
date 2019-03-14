@@ -3,15 +3,15 @@
  
 <style type="text/css">
 body {
-width: 100px;
+width: autopx;
 height: 100px;
-background-image: url(https://i.imgur.com/0sts37t.jpg);
+background-image: url(https://i.imgur.com/vq4lto1.png);
 }
 .ComicSansGreenLightYellow {
 font-family: Comic Sans MS;
 font-size: 24px;
 font-style: normal;
-color: #ffff00;
+color: #ff0000;
 font-weight: 700;
 text-align: left;
 }
@@ -26,7 +26,7 @@ text-align: left;
 var squidMonster =
 {
 	//tilesheet source, size of each frame, and number of game columns
-	tileGraphic: "https://i.imgur.com/xpHu58C.png",
+	tileGraphic: "https://i.imgur.com/HLAyhXP.png",
 	size: 128,
 	columns: 3,
 	//The numbers of the animation frames and the starting frame
@@ -145,6 +145,7 @@ var gameTimer =
 		this.time = 0;
 	}
 };
+
 //=====================================================================
 //Main program
 //=====================================================================
@@ -184,7 +185,7 @@ function fillOcean()
 {
 	for(var row = 0; row < rows; row++)
 	{
-		//playSound('whaleOcean.mp3');
+		playSound("ocean_breeze.mp3");
 		for(var column = 0; column < columns; column++)
 		{
 		//Create a new squidMonster object,give it a random time, display its
@@ -193,24 +194,16 @@ function fillOcean()
 		newMonsterObject.findWaitTime();
 		squidMonsterObjects.push(newMonsterObject);
 		
-		//Create a canvas tag for each squidMonster, add it to the
-		//<div id = "ocean"> tag,
-		//position it, then add a mousedown listener and push it into an array
-		
-		
-		//::::::: 8 lines go here :::::::
-		
-		var canvas = document.createElement("CANVAS");
-		ocean.appendChild(canvas);
-		canvas.style.top = row * size + "px"; //position canvas
-		canvas.style.left = column * size + "px"; //position canvas
-		canvas.addEventListener("mousedown", mousedownHandler, false); //line is needed
-		squidMonsterCanvases.push(canvas); //line is needed
-		
-		
-		
+		//Create a canvas tag for each squidMonster, add it to the <div id = "ocean"> tag, position it, then add a mousedown listener and push it into an array
+		var monstercanvas = document.createElement("CANVAS");
+		ocean.appendChild(monstercanvas);
+		monstercanvas.style.top = row * size + "px"; //position canvas
+		monstercanvas.style.left = column * size + "px"; //position canvas
+		monstercanvas.addEventListener("mousedown", mousedownHandler, false);
+		squidMonsterCanvases.push(monstercanvas);
+
 		//Create drawing surface. push it into the drawingSurfaces array
-		var drawingSurface = canvas.getContext("2d");
+		var drawingSurface = monstercanvas.getContext("2d");
 		monsterDrawingSurfaces.push(drawingSurface);
 		}
 	}
@@ -244,6 +237,9 @@ function gameOver()
 	{
 		var canvas = squidMonsterCanvases[i];
 		canvas.removeEventListener("mousedown", mousedownHandler, false);
+		var squidMonster = squidMonsterObjects[i];
+		squidMonster.currentFrame = 7;
+		squidMonsterObjects[i].aniMate();
 	}
 }
 function playSound(soundfile_ogg, soundfile_mp, soundfile_ma)
@@ -251,13 +247,15 @@ function playSound(soundfile_ogg, soundfile_mp, soundfile_ma)
 	if ("Audio" in window)
 	{
 		var a = new Audio();
-		if (!!(a.canPlayType && a.canPlayType('audio/ogg;codecs="vorbis"').replace(/no/, '')))a.src = soundfile_ogg;
-		else if (!!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/,'')))a.src = soundfile_mp;
+		if (!!(a.canPlayType && a.canPlayType('audio/ogg;codecs="vorbis"').replace(/no/, '')))
+			a.src = soundfile_ogg;
+		else if (!!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/,'')))
+			a.src = soundfile_mp;
 		else if (!!(a.canPlayType && a.canPlayType('audio/mp4; codecs="mp4a.40.2"').replace(/no/, '')))
-		a.src = soundfile_ma;
+			a.src = soundfile_ma;
 		else
-		a.src = soundfile_mp;
-		a.autoplay = true;
+			a.src = soundfile_mp;
+			a.autoplay = true;
 		return;
 	} 
 	else 
@@ -278,9 +276,9 @@ function mousedownHandler(event)
 			var squidMonster = squidMonsterObjects[i]
 			if(squidMonster.state === squidMonster.leaping)
 			{
-				squidMonster.sourceX = Math.floor(5 % squidMonster.columns) * squidMonster.size;
-				squidMonster.sourceY = Math.floor(5 / squidMonster.columns) * squidMonster.size;
-				playSound('explosion.mp3');
+				squidMonsterSquishes++;
+				squidMonster.state = squidMonster.strike;
+				playSound("squish.mp3");
 			}
 		}
 	}
@@ -290,14 +288,14 @@ function render()
 	for(var i = 0; i < squidMonsterObjects.length; i++)
 	{
 		//Get reference to the current squidMonster and drawing surface
-		var squidMonster = squidMonsterCanvases[i]
+		var squidMonster = squidMonsterObjects[i]
 		var drawingSurface = monsterDrawingSurfaces[i]
 		
 		//Clear the current squidMonster's canvas
 		drawingSurface.clearRect(0, 0, size, size);
 		
 		//Draw the squidMonster's current animation frame
-		drawingSurface.drawImage(tileGraphic,squidMonster.sourceX, squidMonster.sourceY, size, size, 366, 0, size, size);
+		drawingSurface.drawImage(tileGraphic,squidMonster.sourceX, squidMonster.sourceY, size, size, 0, 0, size, size);
 	}
 	//Display the output
 	output.innerHTML = "<span class='ComicSansGreenLightYellow '> Squid Monsters "+"Squished:</span> "+squidMonsterSquishes+" <span class='ComicSansGreenLightYellow '>, Time left:</span>" + gameTimer.time;
