@@ -3,6 +3,8 @@
  
 <style type="text/css">
 body {
+width: 100px;
+height: 100px;
 background-image: url(https://i.imgur.com/0sts37t.jpg);
 }
 .ComicSansGreenLightYellow {
@@ -16,7 +18,8 @@ text-align: left;
 }
 </style>
 <body class="ComicSansGreenLightYellow">
-<img src="https://i.imgur.com/pXhl8RO.png" alt="Title"><p id="output"></p>
+<img src="https://i.imgur.com/pXhl8RO.png" alt="Title">
+<p id="output"></p>
 <div id="ocean"></div>
 <script>
 //The squidMonster object
@@ -148,7 +151,7 @@ var gameTimer =
 //Load animation tile sheet
 var tileGraphic = new Image();
 tileGraphic.addEventListener("load", loadHandler, false);
-tileGraphic.src = "../images/" + squidMonster.tileGraphic;
+tileGraphic.src = squidMonster.tileGraphic;
 
 //The number of rows and columns and the size of each cell
 var rows = 3;
@@ -181,7 +184,7 @@ function fillOcean()
 {
 	for(var row = 0; row < rows; row++)
 	{
-		playSound('whaleOcean.mp3');
+		//playSound('whaleOcean.mp3');
 		for(var column = 0; column < columns; column++)
 		{
 		//Create a new squidMonster object,give it a random time, display its
@@ -189,14 +192,20 @@ function fillOcean()
 		var newMonsterObject = Object.create(squidMonster);
 		newMonsterObject.findWaitTime();
 		squidMonsterObjects.push(newMonsterObject);
+		
 		//Create a canvas tag for each squidMonster, add it to the
 		//<div id = "ocean"> tag,
 		//position it, then add a mousedown listener and push it into an array
 		
 		
-		
 		//::::::: 8 lines go here :::::::
 		
+		var canvas = document.createElement("CANVAS");
+		ocean.appendChild(canvas);
+		canvas.style.top = row * size + "px"; //position canvas
+		canvas.style.left = column * size + "px"; //position canvas
+		canvas.addEventListener("mousedown", mousedownHandler, false); //line is needed
+		squidMonsterCanvases.push(canvas); //line is needed
 		
 		
 		
@@ -216,12 +225,7 @@ function aniMate()
 	//Loop through all the monsters in the array, call aniMate method
 	for(var i = 0; i < squidMonsterObjects.length; i++)
 	{
-	
-	
-	//	::::::: 1 line goes here :::::::
-	
-	
-	
+		squidMonsterObjects[i].aniMate();
 	}
 	//check for the end of the game
 	if(gameTimer.time === 0)
@@ -274,14 +278,9 @@ function mousedownHandler(event)
 			var squidMonster = squidMonsterObjects[i]
 			if(squidMonster.state === squidMonster.leaping)
 			{
-			
-			
-			
-			//::::::: 2 lines go here :::::::
-			
-			
-			
-			playSound('explosion.mp3');
+				squidMonster.sourceX = Math.floor(5 % squidMonster.columns) * squidMonster.size;
+				squidMonster.sourceY = Math.floor(5 / squidMonster.columns) * squidMonster.size;
+				playSound('explosion.mp3');
 			}
 		}
 	}
@@ -291,14 +290,8 @@ function render()
 	for(var i = 0; i < squidMonsterObjects.length; i++)
 	{
 		//Get reference to the current squidMonster and drawing surface
-		
-		
-		
-		//var squidMonster = :::::::
-		//var drawingSurface = :::::::
-		
-		
-		
+		var squidMonster = squidMonsterCanvases[i]
+		var drawingSurface = monsterDrawingSurfaces[i]
 		
 		//Clear the current squidMonster's canvas
 		drawingSurface.clearRect(0, 0, size, size);
@@ -307,6 +300,6 @@ function render()
 		drawingSurface.drawImage(tileGraphic,squidMonster.sourceX, squidMonster.sourceY, size, size, 366, 0, size, size);
 	}
 	//Display the output
-	output.innerHTML = "<span class='ComicSansGreenLightYellow '> Squid Monsters" + Squished:</span>" + squidMonsterSquishes + " <span class='ComicSansGreenLightYellow '>, Time left:</span>" + gameTimer.time;
+	output.innerHTML = "<span class='ComicSansGreenLightYellow '> Squid Monsters "+"Squished:</span> "+squidMonsterSquishes+" <span class='ComicSansGreenLightYellow '>, Time left:</span>" + gameTimer.time;
 }
 </script>
