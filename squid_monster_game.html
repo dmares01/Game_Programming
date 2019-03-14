@@ -1,3 +1,5 @@
+<!-- Drew Mares
+Squid Monster Game -->
 <!doctype html>
 <title>Squid Monster Game</title>
  
@@ -22,6 +24,14 @@ text-align: left;
 <p id="output"></p>
 <div id="ocean"></div>
 <script>
+//This game works by creating a squid monster object and assigning it a number of variables including
+//state, images, etc. The game than goes on to create an array of canvas elements each representing one "squid object"
+//Each canvas element has a mousedown Handler that will respond when clicked and check to see if the squid is in it's current
+//"leaping" state or not. If it is it increments the numbers of squids squished, and sets it current state to "strike" which is represented by 
+// an explosion. When the game ends it then clears all the mousedown handlers so that it can no longer be clicked. The game
+//uses three differernt arrays in order to handle all of the information being passed through. One array for the objects, one for the canvases
+//and one for the drawing surfaces. It is all three of these together that allow the game to be rendered and played. 
+
 //The squidMonster object
 var squidMonster =
 {
