@@ -1,0 +1,256 @@
+<!-- Drew Mares
+Gambler Game Assignment 
+4-2-2019-->
+<html>
+<head>
+    <title>Gambler Match Casino</title>
+    <style>
+		body {
+			background-image: url(casino4.jpg);
+			margin: 420px;
+		}
+		form {
+			width:330px;
+			margin:100px;
+			padding:20px;
+		}
+		.AVerdanaYellow {
+			font-family: Verdana, sans-serif;
+			font-size: 14pt;
+			line-height: 13pt;
+			font-style: normal;
+			color: #ffff00;
+			font-weight: light;
+			text-align: left;
+		}
+    </style>
+    
+    <script>
+	
+	var context;
+	var firstPick = true;
+	var firstCard = -1;
+	var secondCard;
+	cardBack = new Image();
+	cardBack.src = "cardBack.jpg";
+	var backColor = "rgb(0,128,0)";
+	var tableColor = "rgb(67,151,105)"; //same color as green table
+	var textColor = "rgb(255,255,0)";
+	var deck = [];
+	var firstsx = 130;
+	var firstsy = 50;
+	var margin = 35;
+	var cardwidth = 100;
+	var cardheight = 120;
+	var tid;
+	var matched;
+	var starttime;
+	var count = 0;
+	var picturePairs = [
+		["leeml.jpg","leeml_2.jpg"],
+	    ["mcmurray.jpg","mcmurray_2.jpg"],
+	    ["mosallam.jpg","mosallam_2.jpg"],
+	    ["vop.jpg","vop_2.jpg"],	   
+	    ["yangl.jpg","yangl_2.jpg"],
+		["https://imgur.com/BPeVdU5.jpg","https://imgur.com/Xw2l6Lf.jpg"],
+		["https://imgur.com/VOVLPLn.jpg","https://imgur.com/RemBUbz.jpg"],
+		["https://imgur.com/itljam4.jpg","https://i.imgur.com/yyrnnOP.jpg"]
+	]
+	
+	
+function playSound(soundfile_ogg, soundfile_mp, soundfile_ma) {
+    if ("Audio" in window) {
+        var a = new Audio();
+        if (!!(a.canPlayType && a.canPlayType('audio/ogg; codecs="vorbis"')
+                .replace(/no/, '')))
+            a.src = soundfile_ogg;
+        else if (!!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/,
+                '')))
+            a.src = soundfile_mp;
+        else if (!!(a.canPlayType && a.canPlayType(
+                'audio/mp4; codecs="mp4a.40.2"').replace(/no/, '')))
+            a.src = soundfile_ma;
+        else
+            a.src = soundfile_mp;
+
+        a.autoplay = true;
+        return;
+    } else {
+        alert("Time almost up");
+    }
+}
+	
+// deck holds card info:  location and dimensions, picture source,
+// and identifying info is set using the 2-d array in the Matrix function
+function Card(sx,sy,swidth,sheight, img, info) {
+	this.sx = sx;
+	this.sy = sy;
+	this.swidth = swidth;
+	this.sheight = sheight;
+	this.info = info;
+	this.img = img;
+	this.draw = replaceRect;
+}
+
+//generate 6 pack of cards on the table
+function Matrix() {
+	var i;
+	var firstCard;
+	var secondCard;
+	var firstPicture;
+	var secondPicture;
+	var cx = firstsx;
+	var cy = firstsy;
+	for(var i=0; i<5; i++) {
+		var image_to_use = Math.floor(Math.random()*picturePairs.length);
+		firstPicture = new Image();
+		//put random call in for i to generate random card pair
+		firstPicture.src = picturePairs[image_to_use][0];
+		firstCard = new Card(cx,cy,cardwidth,cardheight,firstPicture,i);
+		deck.push(firstCard);
+		secondPicture = new Image();
+		//put random call in for i to generate random card pair
+		secondPicture.src = picturePairs[image_to_use][1];		
+		secondCard = new Card(cx,cy+cardheight+margin,cardwidth,cardheight,secondPicture,i);
+		deck.push(secondCard);
+		cx = cx+cardwidth+ margin;
+		firstCard.draw();
+		secondCard.draw();
+		var removed = picturePairs.splice(image_to_use, 1);
+	}
+	
+}
+
+function randomizeCards() {
+	//resembles shuffling cards when playing the game of concentration
+	//swaps the changing information: the image and the info indicating a match
+	var a;
+	var b;
+	var holderInfo;
+	var holderImage;
+	var declen = deck.length
+	var nt;
+		for (nt=0;nt<3*declen;nt++) {  //do the swap 3 times deck.length times
+		  a = Math.floor(Math.random()*declen);
+		  b = Math.floor(Math.random()*declen);
+		  holderInfo = deck[a].info;
+		  holderImage = deck[a].img;
+		  deck[a].info = deck[b].info;
+		  deck[a].img = deck[b].img;
+		  deck[b].info = holderInfo;
+		  deck[b].img = holderImage;
+		}
+}
+
+
+function replaceRect() {
+	context.fillStyle = backColor;
+	context.fillRect(this.sx,this.sy,this.swidth,this.sheight);	
+}
+
+
+function makeMatch(ev) {
+	var out;
+	var mx;
+	var my;
+	var firstChoice;
+	var secondChoice;
+	if ( ev.layerX ||  ev.layerX == 0) { // Firefox
+   			mx= ev.layerX;
+    		my = ev.layerY;
+  		} else if (ev.offsetX || ev.offsetX == 0) { // Opera
+    		mx = ev.offsetX;
+    		my = ev.offsetY;
+  		}
+	var i;
+	for (i=0;i<deck.length;i++){
+		var card = deck[i];
+		if (card.sx >=0)  //this is the way to avoid checking for clicking on this space
+		if ((mx>card.sx)&&(mx<card.sx+card.swidth)&&(my>card.sy)&&(my<card.sy+card.sheight)) {
+			//check that this isn't clicking on first card
+			if ((firstPick)|| (i!=firstCard)) {
+				break;}
+		}
+	}
+	if (i<deck.length) {  //clicked on a card
+		if (firstPick) {
+			firstCard = i;
+			firstPick = false;
+			context.drawImage(card.img,card.sx,card.sy,card.swidth,card.sheight); 
+		}
+		else {
+			secondCard = i;
+			context.drawImage(card.img,card.sx,card.sy,card.swidth,card.sheight); 
+			//
+		  	if (card.info==deck[firstCard].info) {
+				matched = true;
+				count++;
+				context.fillStyle= tableColor;
+				//context.fillRect(10,340,900,100);
+				context.fillStyle=textColor;
+				// replaced line
+				context.fillText("*",520+count*8,350);
+				if (count>= .5*deck.length) {
+					var now = new Date();
+					var nt = Number(now.getTime());
+					var seconds = Math.floor(.5+(nt-starttime)/1000); 
+					context.fillStyle= tableColor;
+					//context.fillRect(0,0,900,400);
+					context.fillStyle=textColor;
+					out = "You finished in "+String(seconds)+ " secs.";
+					context.fillText(out,365,30);
+					context.fillText("Reload page to play it again.",840,295);
+					return;
+				}
+				
+			}
+			else {
+				matched = false;
+			}
+			firstPick = true;
+			tid = setTimeout(cardRevert,1000);
+		}
+	}
+}
+
+function cardRevert() {
+	var card;
+	if (!matched) {
+		deck[firstCard].draw();
+		deck[secondCard].draw();
+	}
+	else {
+		context.fillStyle = tableColor;
+		context.fillRect(deck[secondCard].sx,deck[secondCard].sy,deck[secondCard].swidth,deck[secondCard].sheight);
+		context.fillRect(deck[firstCard].sx,deck[firstCard].sy,deck[firstCard].swidth,deck[firstCard].sheight);
+		deck[secondCard].sx = -1;
+		deck[firstCard].sx = -1;
+	}
+}
+
+function createGame(){
+   playSound('gambler.mp3');
+   context = document.getElementById('canvas').getContext('2d'); 
+   canvas1 = document.getElementById('canvas');
+   canvas1.addEventListener('click',makeMatch,false);
+   Matrix();
+   randomizeCards();
+   context.font="14pt sans-serif";
+   context.fillStyle= textColor;
+   context.fillText("Click on two cards to attempt a match.",30,30);
+   context.fillText("Number of matches so far: ",290,350);
+   starttime = new Date();
+   starttime = Number(starttime.getTime());
+  } 
+
+</script>
+</head>
+<body onLoad="createGame();" "window.resizeTo(1300,800)">  
+<canvas id="canvas" width="1100" height="400">
+Your browser doesn't support the HTML5 element canvas.
+</canvas>  
+<br/>
+
+
+</body>
+</html>
