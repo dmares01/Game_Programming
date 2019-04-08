@@ -37,24 +37,39 @@ Gambler Game Assignment
 	var tableColor = "rgb(67,151,105)"; //same color as green table
 	var textColor = "rgb(255,255,0)";
 	var deck = [];
-	var firstsx = 130;
+	var firstsx = 30;
 	var firstsy = 50;
-	var margin = 35;
-	var cardwidth = 100;
+	var margin = 25;
+	var cardwidth = 95;
 	var cardheight = 120;
 	var tid;
+	var clock;
 	var matched;
+	var wrong_count=0;
 	var starttime;
 	var count = 0;
 	var picturePairs = [
-		["leeml.jpg","leeml_2.jpg"],
-	    ["mcmurray.jpg","mcmurray_2.jpg"],
-	    ["mosallam.jpg","mosallam_2.jpg"],
-	    ["vop.jpg","vop_2.jpg"],	   
-	    ["yangl.jpg","yangl_2.jpg"],
+		["https://imgur.com/rdXut7M.jpg","https://imgur.com/0pV3mpc.jpg"],
+	    ["https://imgur.com/THXTktT.jpg","https://imgur.com/egfIaUy.jpg"],
+	    ["https://imgur.com/byF5qmj.jpg","https://imgur.com/aPyVJ5j.jpg"],
+	    ["https://imgur.com/skw4Wwd.jpg","https://imgur.com/PtyCGtu.jpg"],	   
+	    ["https://imgur.com/bXgcnUd.jpg","https://imgur.com/xQlrVeY.jpg"],
 		["https://imgur.com/BPeVdU5.jpg","https://imgur.com/Xw2l6Lf.jpg"],
 		["https://imgur.com/VOVLPLn.jpg","https://imgur.com/RemBUbz.jpg"],
-		["https://imgur.com/itljam4.jpg","https://i.imgur.com/yyrnnOP.jpg"]
+		["https://imgur.com/itljam4.jpg","https://imgur.com/yyrnnOP.jpg"],
+		["https://i.imgur.com/7g1gElU.jpg","https://i.imgur.com/pxQxv5Y.jpg"],
+		["https://i.imgur.com/JynpaNu.jpg","https://i.imgur.com/hfic7ed.jpg"],
+		["https://i.imgur.com/1wPzoeZ.jpg","https://i.imgur.com/TIgMN42.jpg"],
+		["https://i.imgur.com/mUMHRWu.jpg","https://i.imgur.com/Ut7SItq.jpg"],
+		["https://i.imgur.com/lN8qHfb.jpg","https://i.imgur.com/1iKBdyE.jpg"],
+		["https://i.imgur.com/3zAJole.jpg","https://i.imgur.com/FhxlMcA.jpg"],
+		["https://i.imgur.com/B17W1nM.jpg","https://i.imgur.com/wTDyY4f.jpg"],
+		["https://i.imgur.com/VAScu78.jpg","https://i.imgur.com/P4IIvIe.jpg"],
+		["https://i.imgur.com/3bgycUP.jpg","https://i.imgur.com/FNdXGSP.jpg"],
+		["https://i.imgur.com/sQt1VcF.jpg","https://i.imgur.com/d4sIX2D.jpg"],
+		["https://i.imgur.com/xQRkb97.jpg","https://i.imgur.com/Dxcpfoa.jpg"],
+		["https://i.imgur.com/wPOL5xU.jpg","https://i.imgur.com/unzVuzM.jpg"],
+		["https://i.imgur.com/M5mHMR7.jpg","https://i.imgur.com/omVAPCm.jpg"]
 	]
 	
 	
@@ -101,7 +116,7 @@ function Matrix() {
 	var secondPicture;
 	var cx = firstsx;
 	var cy = firstsy;
-	for(var i=0; i<5; i++) {
+	for(var i=0; i<7; i++) {
 		var image_to_use = Math.floor(Math.random()*picturePairs.length);
 		firstPicture = new Image();
 		//put random call in for i to generate random card pair
@@ -145,7 +160,10 @@ function randomizeCards() {
 
 function replaceRect() {
 	context.fillStyle = backColor;
-	context.fillRect(this.sx,this.sy,this.swidth,this.sheight);	
+	//Dark green color rectangle to show card placement
+	//context.fillRect(this.sx,this.sy,this.swidth,this.sheight);		
+	//Hearthstone card to show card placement
+	context.drawImage(cardBack,this.sx,this.sy,this.swidth,this.sheight);
 }
 
 
@@ -185,34 +203,44 @@ function makeMatch(ev) {
 		  	if (card.info==deck[firstCard].info) {
 				matched = true;
 				count++;
-				context.fillStyle= tableColor;
 				//context.fillRect(10,340,900,100);
 				context.fillStyle=textColor;
 				// replaced line
-				context.fillText("*",520+count*8,350);
+				context.fillText("*",520+count*8,355);
 				if (count>= .5*deck.length) {
+					clearInterval(clock);
+					context.clearRect(0,0,canvas.width,canvas.height);
 					var now = new Date();
 					var nt = Number(now.getTime());
 					var seconds = Math.floor(.5+(nt-starttime)/1000); 
 					context.fillStyle= tableColor;
-					//context.fillRect(0,0,900,400);
+					context.fillRect(130,50,740,280);
 					context.fillStyle=textColor;
-					out = "You finished in "+String(seconds)+ " secs.";
+					out = "You finished in "+String(seconds)+ " secs and had "+String(wrong_count)+" wrong matches";
 					context.fillText(out,365,30);
-					context.fillText("Reload page to play it again.",840,295);
+					context.fillText("Reload page to play it again.",800,285);
 					return;
 				}
 				
 			}
 			else {
 				matched = false;
+				wrong_count++;
 			}
 			firstPick = true;
 			tid = setTimeout(cardRevert,1000);
 		}
 	}
 }
-
+function timer(){
+	var currenttime = new Date();
+	currenttime = Number(currenttime.getTime());
+	currenttime = Math.floor((currenttime - starttime)/1000);
+	context.fillStyle = tableColor;
+	context.fillRect(350,10,50,20);
+	context.fillStyle=textColor;
+	context.fillText(currenttime,365,30);
+}
 function cardRevert() {
 	var card;
 	if (!matched) {
@@ -229,7 +257,7 @@ function cardRevert() {
 }
 
 function createGame(){
-   playSound('gambler.mp3');
+   //playSound('gambler.mp3');
    context = document.getElementById('canvas').getContext('2d'); 
    canvas1 = document.getElementById('canvas');
    canvas1.addEventListener('click',makeMatch,false);
@@ -239,6 +267,7 @@ function createGame(){
    context.fillStyle= textColor;
    context.fillText("Click on two cards to attempt a match.",30,30);
    context.fillText("Number of matches so far: ",290,350);
+   clock = setInterval(timer, 10);
    starttime = new Date();
    starttime = Number(starttime.getTime());
   } 
