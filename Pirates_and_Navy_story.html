@@ -49,10 +49,19 @@ padding-top: 100px;
 text-align: center;
 font-size: 20px;
 }
+#game_info
+{
+border: 2px #222222 solid;
+background: white;
+color: black;
+visibility: hidden;
+
+}
 input{
 padding: 5px 50px;
 margin-left: 50px;
 margin-bottom: 10px;
+margin-top: 10px;
 value: center;
 color: white;
 background-color: black;
@@ -70,11 +79,14 @@ Your browser doesn't support the HTML5 element canvas.
 <input id = "medium_game" type = "button" value = "MEDIUM" onclick = "run_game()"</input>
 <input id = "hard_game" type = "button" value = "HARD" onclick = "run_game()"</input>
 <div id="ocean"></div>
+<input id = "rules" type = "button" value = "Click Here to Show Game Rules" onclick = "show_rules()"</input>
 <p id="game_info">Pirates & Navy Rules
 	<br>Fight pirates to get gold, use that gold at islands to get food, and get as much experience as possible.
-	<br>Islands with Pirates are much easier to fight, but can only be fought once.
-	<br>You get one point for every turn you survive plus your ending experience, as well as half of your leftover food and gold.
-	<br>As the game progresses food will become more and more expensive, so keep that in mind!
+	<br>Pirate islands are much easier to fight, but can only be fought once. While the ships are harder,
+	<br>they will give you more experience, and usaully a bit more gold. How risky do you feel?
+	<br>As the game progresses food will become more and more expensive, so keep that in mind and don't starve!
+	<br>Your score is based off of how much food, gold, and experience you have. 
+	<br>Experience is worth 1 point, gold worth 1/2 point, and food worth 1/4 of a point. 
 	</p>
 
 </body>
@@ -89,13 +101,19 @@ function introduction(){
 	var startGameOutput = document.querySelector("#output");
 	startGameOutput.innerHTML = "You decided to set sail on a nice summer day, not knowing where life would take you <br>";
 	startGameOutput.innerHTML += "After many months of sailing your crew is weary, tired, and wants to head back to land <br>";
-	//the fastest way back is through pirate infested waters. Do you dare try your luck?
-	startGameOutput.innerHTML += "Fight through the pirates and challenges to complete your degree <br>";
-	startGameOutput.innerHTML += "Look out for the deadly sea monster of senioritis as it will surely be your doom <br>";
+	startGameOutput.innerHTML += "the fastest way back is through pirate infested waters. Do you dare try your luck? <br>"
+	startGameOutput.innerHTML += "Fight through the pirates and scour islands for food to make it home safe <br>";
+	startGameOutput.innerHTML += "Legend has it there is an old sea monster that roams across these waters<br>";
+	startGameOutput.innerHTML += "If it's true try not to get eaten, that would be an awful way to die.  <br>";
 	startGameOutput.innerHTML += "Use the arrow keys to navigate your ship back home and complete your major <br>";
+}
+function show_rules(){
+	document.getElementById("game_info").style.visibility = "visible";
+	document.getElementById("rules").remove();
 }
 function run_game(){
 	//Get a reference to the ocean and output
+	document.getElementById("output").style.paddingTop = "0px";
 	document.getElementById("easy_game").style.visibility = "hidden"
 	document.getElementById("medium_game").style.visibility = "hidden"
 	document.getElementById("hard_game").style.visibility = "hidden"
@@ -261,7 +279,7 @@ function run_game(){
 	var gold = 10;
 	var experience = 0;
 	var score = 0;
-	var gameMessage = "Use arrow keys to sail home and avoid the monster. Reload page to re-play.<br><br>";
+	var gameMessage = "Use arrow keys to sail home and avoid the monster.<br><br>";
 
 	//will clear the ocean map from previous turns
 	render();
@@ -355,6 +373,7 @@ function run_game(){
 		}
 		food--;
 		score++;
+		
 		if(food <= 0 || gold <= 0){
 			endGame();
 		}
@@ -480,7 +499,6 @@ function run_game(){
 		else
 		{
 			//Tell the player if they don't have enough gold
-			experience += 1;
 			gameMessage = "Mismanager! We don't have enough gold to buy food.<br><br>"
 		}
 	}
@@ -503,7 +521,7 @@ function run_game(){
 			gold -= stolenGold;
 
 			//Give the player some experience for trying 
-			experience += 1;
+			experience += 2;
 
 			//Update the game message
 			gameMessage 
@@ -518,7 +536,7 @@ function run_game(){
 			gold += pirateGold;
 
 			//Add some experience 
-			experience += 2;
+			experience += 3;
 
 			//Update the game message
 			gameMessage 
@@ -576,8 +594,7 @@ function run_game(){
 	function render()
 	{
 		output.innerHTML = gameMessage;
-		output.innerHTML += "<br><strong>Ship's Store</strong>: Gold: " + gold + ", Food: " + food + ", Experience: " + experience + " Score: " + score;
-		output.innerHTML += "<br> Please select a difficulty to try again.";
+		output.innerHTML += "<br><strong>Ship's Store</strong>: Gold: " + gold + ", Food: " + food + ", Experience: " + experience + " Turns Survived: " + score;
 		//Clear the ocean of img cells
 		//from the previous turn
 		if(ocean.hasChildNodes())
@@ -648,10 +665,10 @@ function run_game(){
 		if(map[shipRow][shipColumn] === home)
 		{
 			//Calculate the score
-			var final_score = Math.round(food/2) + Math.round(gold/2)+ experience + score;
+			var final_score = Math.round(food/4) + Math.round(gold/2) + experience + score;
 
 			//Display the game message
-			gameMessage = "<strong>You made it home alive! " + "Final Score: " + final_score;
+			gameMessage = "<strong>You made it home alive! " + "Final Score: " + final_score + "</strong>";
 		}
 		else if(gameObjects[shipRow][shipColumn] === monster)
 		{
@@ -662,14 +679,14 @@ function run_game(){
 			//Display the game message
 			if(gold <= 0)
 			{
-				gameMessage += " <br>You've run out of gold!"; 
+				gameMessage += "<br>You've run out of gold!"; 
 			}
 			else
 			{ 
 				gameMessage += " <br>You've run out of food!"; 
 			}
 
-			gameMessage += " <br><strong>Mutiny: Your crew makes you walk the plank while hurling expletives!"; 
+			gameMessage += " <br><strong>Mutiny: Your crew makes you walk the plank while hurling expletives!</strong><br>"; 
 		}
 
 		//Remove the keyboard listener to end the game
@@ -677,6 +694,10 @@ function run_game(){
 		document.getElementById("easy_game").style.visibility = "visible"
 		document.getElementById("medium_game").style.visibility = "visible"
 		document.getElementById("hard_game").style.visibility = "visible"
+		setTimeout(hide_ocean, 1000);
+		gameMessage += " <br>Please select a difficulty to play again"; 
+	}
+	function hide_ocean(){
 		ocean.style.visibility = "hidden";
 	}
 }
