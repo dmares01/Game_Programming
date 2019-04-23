@@ -24,16 +24,16 @@ position: relative;
 width: 896px;
 height: 896px;
 border: 5px black solid;
-<!-- background-image: url(""); -->
+<!-- background-image: url("https://i.imgur.com/9gCHr95.png"); -->
 }
 /*size of each cell on the ocean*/
 .cell
 {
 display: block;
 position: absolute;
-background: url("https://i.imgur.com/9gCHr95.png");
-background-width: 10px;
-background-height: 10px; 
+background: url("https://i.imgur.com/9gCHr95.jpg?1");
+background-width: 128px;
+background-height: 128px; 
 width:  128px;
 height: 128px;
 }
@@ -55,6 +55,7 @@ border: 2px #222222 solid;
 background: white;
 color: black;
 visibility: hidden;
+padding: 10px;
 
 }
 input{
@@ -220,6 +221,7 @@ function run_game(){
 
 	//Map code--used in the matrix above
 	var water = 0;
+	var fill_object = -1;
 	var island = 1;
 	var pirate = 2;
 	var home = 3;
@@ -275,7 +277,7 @@ function run_game(){
 			}
 		}
 	}
-	var food = 11;
+	var food = 10;
 	var gold = 10;
 	var experience = 0;
 	var score = 0;
@@ -621,10 +623,13 @@ function run_game(){
 				//Find the correct image for this map cell
 				switch(map[row][column])
 				{
-					case water:
+					case water:	
 						cell.src = "https://i.imgur.com/9gCHr95.png";
 						break;
-
+						
+					case fill_object:
+						cell.src = "https://i.imgur.com/9gCHr95.png";
+						break;
 					case island:
 						cell.src = "https://imgur.com/n8pMk7i.png";
 						break;
