@@ -1,0 +1,712 @@
+<!-- 
+Drew Mares
+Pirates_and_Navy Assignment
+2-15-2019 
+-->
+<!doctype html>
+<title>Pirates & Navy</title>
+<style>
+body
+{
+background-color: #555566;
+padding-left: 100px;
+}
+#text_box
+{
+position: relative;
+width: 896px;
+height: 200px;
+}
+/*size of the ocean (playing board)*/
+#ocean
+{
+position: relative;
+width: 896px;
+height: 896px;
+border: 5px black solid;
+<!-- background-image: url("https://i.imgur.com/9gCHr95.png"); -->
+}
+/*size of each cell on the ocean*/
+.cell
+{
+display: block;
+position: absolute;
+background: url("https://i.imgur.com/9gCHr95.jpg?1");
+background-width: 128px;
+background-height: 128px; 
+width:  128px;
+height: 128px;
+}
+/*size of the the ocean*/
+p
+{
+color: white;
+width: 800px;
+}
+#output
+{
+padding-top: 100px;
+text-align: center;
+font-size: 20px;
+}
+#game_info
+{
+border: 2px #222222 solid;
+background: white;
+color: black;
+visibility: hidden;
+padding: 10px;
+
+}
+input{
+padding: 5px 50px;
+margin-left: 50px;
+margin-bottom: 10px;
+margin-top: 10px;
+value: center;
+color: white;
+background-color: black;
+border-color: white;
+font-size: 15px;
+
+}
+</style>
+<body onLoad="introduction();">  
+<!-- <canvas id="canvas" width="1100" height="400">
+Your browser doesn't support the HTML5 element canvas.
+</canvas>   -->
+<p id="output"></p>
+<input id = "easy_game" type = "button" value = "EASY" onclick = "run_game()" </input>
+<input id = "medium_game" type = "button" value = "MEDIUM" onclick = "run_game()"</input>
+<input id = "hard_game" type = "button" value = "HARD" onclick = "run_game()"</input>
+<div id="ocean"></div>
+<input id = "rules" type = "button" value = "Click Here to Show Game Rules" onclick = "show_rules()"</input>
+<p id="game_info">Pirates & Navy Rules
+	<br>Fight pirates to get gold, use that gold at islands to get food, and get as much experience as possible.
+	<br>Pirate islands are much easier to fight, but can only be fought once. While the ships are harder,
+	<br>they will give you more experience, and usaully a bit more gold. How risky do you feel?
+	<br>As the game progresses food will become more and more expensive, so keep that in mind and don't starve!
+	<br>Your score is based off of how much food, gold, and experience you have. 
+	<br>Experience is worth 1 point, gold worth 1/2 point, and food worth 1/4 of a point. 
+	</p>
+
+</body>
+<script>
+document.getElementById("easy_game").style.backgroundColor = "#009900";
+document.getElementById("easy_game").style.marginLeft = "150px";
+document.getElementById("medium_game").style.backgroundColor = "#0005ff";
+document.getElementById("hard_game").style.backgroundColor = "#bb0000";
+function introduction(){
+	var hideocean = document.querySelector("#ocean");
+	hideocean.style.visibility = "hidden";
+	var startGameOutput = document.querySelector("#output");
+	startGameOutput.innerHTML = "You decided to set sail on a nice summer day, not knowing where life would take you <br>";
+	startGameOutput.innerHTML += "After many months of sailing your crew is weary, tired, and wants to head back to land <br>";
+	startGameOutput.innerHTML += "the fastest way back is through pirate infested waters. Do you dare try your luck? <br>";
+	startGameOutput.innerHTML += "Fight through the pirates and scour islands for food to make it home safe <br>";
+	startGameOutput.innerHTML += "Legend has it there is an old sea monster that roams across these waters<br>";
+	startGameOutput.innerHTML += "If it's true try not to get eaten, that would be an awful way to die.  <br>";
+	startGameOutput.innerHTML += "Avoid starvation, and don't run out of gold or your crew will replace you with <br>";
+	startGameOutput.innerHTML += "someone more capable of guiding them home. May the wind be ever in your favor <br>";
+	startGameOutput.innerHTML += "Use the arrow keys to navigate your ship back home and deliver your crew safely <br>";
+}
+function show_rules(){
+	document.getElementById("game_info").style.visibility = "visible";
+	document.getElementById("rules").remove();
+}
+function run_game(){
+	//Get a reference to the ocean and output
+	document.getElementById("output").style.paddingTop = "0px";
+	document.getElementById("easy_game").style.visibility = "hidden"
+	document.getElementById("medium_game").style.visibility = "hidden"
+	document.getElementById("hard_game").style.visibility = "hidden"
+	var ocean = document.querySelector("#ocean");
+	ocean.style.visibility = "visible";
+	var output = document.querySelector("#output");
+
+	//Keyboard listener for user to manipulate ship
+	window.addEventListener("keydown", keydownHandler, false);
+	var num_of_ships = 0;
+	var num_of_islands = 0;
+	var num_of_home = 0;
+	var num_of_pirate = 0;
+
+	function random_object(){
+		var x = Math.floor(Math.random()*20)
+
+		switch (x){
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+			case 11:
+			case 12:
+			case 13:
+			case 17:
+				x = 0;
+				break;
+				
+			case 14:
+				if(num_of_home < 1){
+					x = 3;
+					num_of_home++;
+				}
+				else{
+					x = 0;
+				}
+				break;
+				
+			case 15:
+			case 16:
+				if(((num_of_ships + num_of_islands + num_of_pirate) < num_of_objects)&&(num_of_islands <= 3)){
+					x = 1;
+					num_of_islands++;
+				}
+				else{
+					x = 0;
+				}
+				break;
+				
+			case 18:
+				if(((num_of_pirate + num_of_ships + num_of_islands) < num_of_objects)&&(num_of_pirate < 3)){
+					x = 6;
+				}
+				else{
+					x = 0;
+				}
+				break;
+			case 19:
+			case 20:
+				
+				if(((num_of_ships + num_of_islands + num_of_pirate) < num_of_objects)&&(num_of_ships <= 3)){
+					x = 2;
+					num_of_ships++;
+				}
+				else{
+					x = 0;
+				}
+				break;
+		}
+		return x;
+	}
+
+	//hardcoded objects in map 
+	var map =
+	[
+	[0,0,0,0,0,0,3],
+	[0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0],
+	[0,0,0,-1,0,0,0],
+	[0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0],
+	[-1,0,0,0,0,0,0],
+	];
+
+	//Placing the various game objects on the Map
+	var gameObjects =
+	[
+	[0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0],
+	[0,0,0,5,0,0,0],
+	[0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0],
+	[4,0,0,0,0,0,0],
+
+	];
+
+	//Map code--used in the matrix above
+	var water = 0;
+	var fill_object = -1;
+	var island = 1;
+	var pirate = 2;
+	var home = 3;
+	var ship = 4;
+	var monster = 5;
+	var pirateIsland = 6;
+	var deadIsland = 7;
+	//-1 is put in place of player ship so an object is not spawned there on the map matrix
+
+	//The size of each cell
+	var size = 128;
+
+	//The number of rows and columns
+	var rows = map.length;
+	var columns = map[0].length;
+	var num_of_objects = Math.floor(((rows * columns)/4)-2);// subtract 2 is to account for 2 spaces of the monster and home
+
+	//for loop to randomize objects in map around those that are hardcoded
+	for(var r = 0; r < rows; r++){
+		for(var c = 0; c < columns; c++){
+			if(map[r][c] == 0){
+				map[r][c] = random_object();
+			}
+		}	
+	}
+	if(num_of_ships < 1){
+		map[4][2] = 2;
+	}
+	//Arrow key codes
+	var up = 38;
+	var down = 40;
+	var right = 39;
+	var left = 37;
+
+	//Set the ship's start position
+	var shipRow;
+	var shipColumn;
+	var monsterRow;
+	var monsterColumn;
+
+	for(var row = 0; row < rows; row++)
+	{
+		for(var column = 0; column < columns; column++)
+		{
+			if(gameObjects[row][column] === ship)
+			{
+				shipRow = row;
+				shipColumn = column;
+			}
+			if(gameObjects[row][column] === monster){
+				monsterRow = row;
+				monsterColumn = column;
+			}
+		}
+	}
+	var food = 10;
+	var gold = 10;
+	var experience = 0;
+	var score = 0;
+	var gameMessage = "Use arrow keys to sail home and avoid the monster.<br><br>";
+
+	//will clear the ocean map from previous turns
+	render();
+
+	function keydownHandler(event)
+	{
+		if((event.keyCode != up)&&(event.keyCode != down)&&(event.keyCode != right)&&(event.keyCode != left)){
+			return;
+		}
+		switch(event.keyCode)
+		{
+			case up:
+				//determine if the ship's move will be within the playing field
+				if(shipRow > 0)
+				{
+					//if so, clear ship's current cell
+					gameObjects[shipRow][shipColumn] = 0;
+					//subract 1 from the ship's row to move it up one row on the map
+					shipRow--;
+					//apply the ship's new updated position to the array
+					gameObjects[shipRow][shipColumn] = ship;
+				}
+				break;
+				
+			case down:
+				if(shipRow < rows - 1)
+				{
+					gameObjects[shipRow][shipColumn] = 0;
+					shipRow++;
+					gameObjects[shipRow][shipColumn] = ship;
+				}
+				break;
+				
+			case left:
+				if(shipColumn > 0)
+				{
+					gameObjects[shipRow][shipColumn] = 0;
+					shipColumn--;
+					gameObjects[shipRow][shipColumn] = ship;
+				}
+				break;
+				
+			case right:
+				if(shipColumn < columns - 1)
+				{
+					gameObjects[shipRow][shipColumn] = 0;
+					shipColumn++;
+					gameObjects[shipRow][shipColumn] = ship;
+				}
+				break;
+		}
+		//find out what kind of cell the ship is on
+		switch(map[shipRow][shipColumn])
+		{
+			case water:
+				console.log("water");
+				gameMessage = "You sail across the sea <br><br>"
+				break;
+				
+			case pirate:
+				console.log("pirate");
+				pirate_fight();
+				break;
+				
+			case island:
+				console.log("island");
+				more_food();
+				break;
+			
+			case pirateIsland:
+				console.log("pirateIsland");
+				pirate_island();
+				break;
+				
+			case deadIsland:
+				console.log("mysteryIsland");
+				//make own function for dead island
+				dead_island();
+				break;
+				
+			case home:
+				console.log("home");
+				endGame();
+				break;
+		}
+
+		moveMonster();
+		if(gameObjects[shipRow][shipColumn] === monster)
+		{
+			endGame();
+		}
+		food--;
+		score++;
+		
+		if(food <= 0 || gold <= 0){
+			endGame();
+		}
+		//Render the game
+		render();
+	}
+
+	function moveMonster()
+	{
+		//The 4 possible directions that the monster can move
+		var UP = "UP";
+		var DOWN = "DOWN";
+		var RIGHT = "RIGHT";
+		var LEFT = "LEFT";
+		
+		//An array to store the valid direction that
+		//the monster is allowed to move in
+		var validDirections = [];
+
+		//The final direction that the monster will move in
+		var direction = undefined;
+
+		//Find out what kinds of things are in the cells 
+		//that surround the monster. If the cells contain water,
+		//push the corresponding direction into the validDirections array
+		if(monsterRow > 0)
+		{
+			var thingAbove = map[monsterRow - 1][monsterColumn];
+			if(thingAbove === water)
+			{
+			validDirections.push(UP);
+			}
+		}
+		if(monsterRow < rows - 1)
+		{ 
+			var thingBelow = map[monsterRow + 1][monsterColumn];
+			if(thingBelow === water)
+			{
+			validDirections.push(DOWN);
+			}
+		}
+		if(monsterColumn > 0)
+		{
+			var thingToTheLeft = map[monsterRow][monsterColumn - 1];
+			if(thingToTheLeft === water)
+			{
+				validDirections.push(LEFT);
+			}
+		} 
+		if(monsterColumn < columns - 1)
+		{
+			var thingToTheRight = map[monsterRow][monsterColumn + 1];
+			if(thingToTheRight === water)
+			{
+				validDirections.push(RIGHT);
+			}
+		}
+
+		if(validDirections.length !== 0)
+		{
+		var randomNumber = Math.floor(Math.random() * validDirections.length);
+		direction = validDirections[randomNumber];
+		}
+
+		//Move the monster in the chosen direction
+		switch(direction)
+		{
+			case UP:
+				//Clear the monster's current cell
+				if(gameObjects[monsterRow][monsterColumn] != 4){
+					gameObjects[monsterRow][monsterColumn] = 0;
+				}
+				//Subtract 1 from the monster's row
+				monsterRow--; 
+				//Apply the monster's new updated position to the array
+				gameObjects[monsterRow][monsterColumn] = monster;
+				break;
+
+			case DOWN:
+				if(gameObjects[monsterRow][monsterColumn] != 4){
+					gameObjects[monsterRow][monsterColumn] = 0;
+				}
+				monsterRow++;
+				gameObjects[monsterRow][monsterColumn] = monster;
+				break;
+
+			case LEFT:
+				if(gameObjects[monsterRow][monsterColumn] != 4){
+					gameObjects[monsterRow][monsterColumn] = 0;
+				}
+				monsterColumn--;
+				gameObjects[monsterRow][monsterColumn] = monster;
+				break;
+
+			case RIGHT:
+				if(gameObjects[monsterRow][monsterColumn] != 4){
+					gameObjects[monsterRow][monsterColumn] = 0;
+				}
+				monsterColumn++;
+				gameObjects[monsterRow][monsterColumn] = monster;
+				break;
+		}
+	}
+	function more_food()
+	{
+		//Figure out how much food the island has
+		//and how much it should cost
+		var newFood = experience + gold;
+		var cost = Math.ceil(Math.random() * newFood);
+
+		//Let the player buy food if there's enough gold
+		//to afford it and increment experience
+		if(gold > cost)
+		{
+			gold -= cost;
+			food += newFood;
+			experience += 1;
+
+			gameMessage 
+			= "You buy " + newFood + " coconuts"
+			+ " for " + cost + " gold pieces.<br><br>"
+		}
+		else
+		{
+			//Tell the player if they don't have enough gold
+			gameMessage = "Mismanager! We don't have enough gold to buy food.<br><br>"
+		}
+	}
+
+	function pirate_fight()
+	{
+		//The ships strength
+		var shipStrength = Math.ceil((food + experience) / 2);
+
+		//A random number between 1 and the ship's strength
+		var pirateStrength = Math.ceil(Math.random() * shipStrength * 2);
+
+		if(pirateStrength > shipStrength)
+		{
+			//The pirates ransack the ship
+			var stolenGold = Math.round(pirateStrength / 2);
+			if (stolenGold > gold){
+				stolenGold = gold;
+			}
+			gold -= stolenGold;
+
+			//Give the player some experience for trying 
+			experience += 2;
+
+			//Update the game message
+			gameMessage 
+			= "You fight and lose " + stolenGold + " gold pieces."
+			+ " <br>Ship's strength: " + shipStrength 
+			+ " <br>Pirate's strength: " + pirateStrength;
+		}
+		else
+		{
+			//You win the pirates' gold
+			var pirateGold = Math.round(pirateStrength / 1.5);
+			gold += pirateGold;
+
+			//Add some experience 
+			experience += 3;
+
+			//Update the game message
+			gameMessage 
+			= "You fight and win " + pirateGold + " gold pieces."
+			+ " <br>Ship's strength: " + shipStrength 
+			+ " <br>Pirate's strength: " + pirateStrength;
+		} 
+	}
+
+	function pirate_island()
+	{
+
+		//The ships strength
+		var shipStrength = Math.ceil((food + experience) / 2);
+
+		//A random number between 1 and the ship's strength
+		var pirateStrength = Math.ceil(Math.random() * shipStrength * 1.5);
+
+		if(pirateStrength > shipStrength)
+		{
+			//The pirates ransack the ship and steal some of the gold
+			var stolenGold = Math.round(pirateStrength / 2);
+			gold -= stolenGold;
+
+			//Give the player some experience for trying 
+			experience += 1;
+
+			//Update the game message
+			gameMessage 
+			= "You fail to take the island and lose " + stolenGold + " gold pieces."
+			+ " <br>Ship's strength: " + shipStrength 
+			+ " <br>Pirate's strength: " + pirateStrength;
+		}
+		else
+		{
+			//You win the pirates' gold
+			var pirateGold = Math.round(pirateStrength);
+			gold += pirateGold;
+
+			//Add some experience 
+			experience += 2;
+
+			//Update the game message
+			gameMessage 
+			= "You take over the island and get " + pirateGold + " gold pieces."
+			+ " <br>Ship's strength: " + shipStrength 
+			+ " <br>Pirate's strength: " + pirateStrength;
+			map[shipRow][shipColumn] = 7;
+		} 
+	}
+	function dead_island()
+	{
+		gameMessage = "You have already taken over this island. There are no pirates left <br><br>";
+	}
+	function render()
+	{
+		output.innerHTML = gameMessage;
+		output.innerHTML += "<br><strong>Ship's Store</strong>: Gold: " + gold + ", Food: " + food + ", Experience: " + experience + " Turns Survived: " + score;
+		//Clear the ocean of img cells
+		//from the previous turn
+		if(ocean.hasChildNodes())
+		{
+			for(var i = 0; i < rows * columns; i++)
+			{
+				ocean.removeChild(ocean.firstChild);
+			}
+		}
+		//Render the game by looping through the map arrays
+		for(var row = 0; row < rows; row++)
+		{
+			for(var column = 0; column < columns; column++)
+			{
+				//Create an image tag called cell
+				var cell = document.createElement("img");
+
+				//Set the CSS class to "cell"
+				cell.setAttribute("class", "cell");
+
+				//Add the img tag to the <div id="ocean"> tag
+				ocean.appendChild(cell);
+
+				//Find the correct image for this map cell
+				switch(map[row][column])
+				{
+					case water:	
+						cell.src = "https://i.imgur.com/9gCHr95.png";
+						break;
+						
+					case fill_object:
+						cell.src = "https://i.imgur.com/9gCHr95.png";
+						break;
+					case island:
+						cell.src = "https://imgur.com/n8pMk7i.png";
+						break;
+
+					case pirate:
+						cell.src = "https://i.imgur.com/LeaKg6v.png";
+						break;
+						
+					case pirateIsland:
+						cell.src = "https://i.imgur.com/5TjC7Wz.png";
+						break;
+					case deadIsland:
+						cell.src = "https://i.imgur.com/zNmcySV.png";
+						break;
+					case home:
+						cell.src = "https://i.imgur.com/hH7Chrc.png";
+						break;
+				}
+					//Add the ship and monster from the gameObjects array
+				switch(gameObjects[row][column])
+				{
+					case monster:
+						cell.src = "https://i.imgur.com/tTeU3WW.png";
+						break;
+					case ship:
+						cell.src = "https://i.imgur.com/c53qesh.png";
+						break;
+				}
+				//Position the cell
+				cell.style.top = row * size + "px";
+				cell.style.left = column * size + "px";
+			}
+		}
+	}
+
+	function endGame()
+	{
+		if(map[shipRow][shipColumn] === home)
+		{
+			//Calculate the score
+			var final_score = Math.round(food/4) + Math.round(gold/2) + experience + score;
+
+			//Display the game message
+			gameMessage = "<strong>You made it home alive! " + "Final Score: " + final_score + "</strong>";
+		}
+		else if(gameObjects[shipRow][shipColumn] === monster)
+		{
+			gameMessage = "Your ship has been swallowed by a sea monster!";
+		}
+		else
+		{
+			//Display the game message
+			if(gold <= 0)
+			{
+				gameMessage += "<br>You've run out of gold!"; 
+			}
+			else
+			{ 
+				gameMessage += " <br>You've run out of food!"; 
+			}
+
+			gameMessage += " <br><strong>Mutiny: Your crew makes you walk the plank while hurling expletives!</strong><br>"; 
+		}
+
+		//Remove the keyboard listener to end the game
+		window.removeEventListener("keydown", keydownHandler, false);
+		document.getElementById("easy_game").style.visibility = "visible"
+		document.getElementById("medium_game").style.visibility = "visible"
+		document.getElementById("hard_game").style.visibility = "visible"
+		setTimeout(hide_ocean, 1000);
+		gameMessage += " <br>Please select a difficulty to play again"; 
+	}
+	function hide_ocean(){
+		ocean.style.visibility = "hidden";
+	}
+}
+</script>
+

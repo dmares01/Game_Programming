@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+	<head>
+    	<title>Canvas Basics</title>
+        <script>
+        window.addEventListener('load',
+        	function (){
+            	var elem = document.getElementById('myCanvas');
+                var context = elem.getContext('2d');
+                context.fillStyle	= '#0000ff';
+                context.strokeStyle	= '#008800';
+                context.lineWidth	=	5;
+                
+                context.fillRect(10,10,300,50);
+                context.strokeRect(10,70,300,50);
+                context.clearRect(40,35,200,60);
+                context.strokeRect(40,35,200,60);
+                context.fillStyle = '#ff0000';
+                context.fillRect(80,60,30,100);
+                context.fillRect(180,60,30,100);
+				context.beginPath();
+				context.arc(145, 75, 25, 0, 2 * Math.PI);
+                context.fill();
+            }, false);
+         </script>
+      </head>
+      
+      <body>
+      	<p><canvas id="myCanvas" width= "400" height = "150">
+        Your browser does not support canvas. </canvas></p>
