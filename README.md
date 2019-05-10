@@ -11,7 +11,7 @@ This game is a simple guessing game where the user needs to guess a prime number
 well as using switch to properly respond to the user's input. 
 
 # Pirates and Navy
-Another simple game, although this one is not complete. The end goal will be to have the user navigate across the sea to
-reach the home on the other side while avoiding the other pirate ships and a water monster. In addition to that they 
+Another simple game, the end goal will be to have the user navigate across the sea to
+reach the home on the other side while avoiding the other pirate ships and a sea monster. In addition to that they 
 will also need to maintain a store of food to travel and can get a high score through obtaining gold and experience
 from fighting pirates. I put my own twist on this and changed the ships to represent colleges in my area. 
