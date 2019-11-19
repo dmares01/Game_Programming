@@ -1,4 +1,7 @@
-# Game_Programming
+# Needs Updating
+<br> <br> <br> <br> <br> <br> <br>
+
+# Game Programming
 A repository for assignments and programs in the Game Programming class I am taking at Augsburg
 This is my first time using html and javascript but so far the projects have been exciting and I tend to go a lot
 farther with the games then required for the class. 
